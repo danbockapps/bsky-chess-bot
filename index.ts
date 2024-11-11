@@ -1,13 +1,10 @@
 import {AtpAgent} from '@atproto/api'
 import {configDotenv} from 'dotenv'
+import {deepPrint} from './utils'
 
 interface Record {
   createdAt: string
   text: string
-  replyCount: number
-  repostCount: number
-  likeCount: number
-  quoteCount: number
 }
 
 configDotenv()
@@ -32,12 +29,12 @@ const run = async () => {
   console.timeEnd('run')
 
   const processedFeed = feed.map((item) => {
-    const {record, replyCount, repostCount, likeCount, quoteCount} = item.post
+    const {record, embed, replyCount, repostCount, likeCount, quoteCount} = item.post
     const {createdAt, text} = record as Record
-    return {createdAt, text, replyCount, repostCount, likeCount, quoteCount}
+    return {createdAt, text, embed, replyCount, repostCount, likeCount, quoteCount}
   })
 
-  console.log(processedFeed)
+  deepPrint(processedFeed)
 }
 
 run()
