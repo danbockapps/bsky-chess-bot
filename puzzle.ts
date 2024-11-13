@@ -37,7 +37,7 @@ getRandomLine(filePath)
     deepPrint(data.blob)
 
     const post = {
-      text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2.`,
+      text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chessfeed`,
       langs: ['en'],
       createdAt: new Date().toISOString(),
       embed: {
