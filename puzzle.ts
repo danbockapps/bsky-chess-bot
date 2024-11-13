@@ -1,4 +1,4 @@
-import {AtpAgent} from '@atproto/api'
+import {AppBskyFeedPost, AtpAgent} from '@atproto/api'
 import {configDotenv} from 'dotenv'
 import getPinkMonarchyUrl from './getPinkMonarchyUrl'
 import getRandomLine from './getRandomLine'
@@ -36,8 +36,14 @@ getRandomLine(filePath)
     console.log('blob')
     deepPrint(data.blob)
 
-    const post = {
+    const post: Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, 'createdAt'> = {
       text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chessfeed`,
+      facets: [
+        {
+          index: {byteStart: 29, byteEnd: 39},
+          features: [{$type: 'app.bsky.richtext.facet#tag', tag: 'chessfeed'}],
+        },
+      ],
       langs: ['en'],
       createdAt: new Date().toISOString(),
       embed: {
