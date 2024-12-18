@@ -3,7 +3,8 @@ import {Chess} from 'chess.js'
 const getPinkMonarchyUrl = (line: string) => {
   const [, fen, moves] = line.split(',')
   const chess = new Chess(fen)
-  chess.move(moves.split(' ')[0])
+  const firstMove = moves.split(' ')[0]
+  chess.move(firstMove)
   const newFen = chess.fen()
   const color = newFen.split(' ')[1] === 'w' ? 'white' : 'black'
 
@@ -12,7 +13,7 @@ const getPinkMonarchyUrl = (line: string) => {
     color,
     url: `https://lichess1.org/export/fen.gif?fen=${encodeURIComponent(
       newFen,
-    )}&theme=pink&piece=monarchy&color=${color}`,
+    )}&theme=pink&piece=monarchy&color=${color}&lastMove=${firstMove}`,
   }
 }
 

@@ -37,11 +37,11 @@ getRandomLine(filePath)
     deepPrint(data.blob)
 
     const post: Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, 'createdAt'> = {
-      text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chessfeed`,
+      text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chess`,
       facets: [
         {
-          index: {byteStart: 29, byteEnd: 39},
-          features: [{$type: 'app.bsky.richtext.facet#tag', tag: 'chessfeed'}],
+          index: {byteStart: 29, byteEnd: 35},
+          features: [{$type: 'app.bsky.richtext.facet#tag', tag: 'chess'}],
         },
       ],
       langs: ['en'],
