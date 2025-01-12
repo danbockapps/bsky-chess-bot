@@ -1,7 +1,8 @@
-import {AppBskyFeedPost, AtpAgent} from '@atproto/api'
+import {AppBskyFeedPost} from '@atproto/api'
 import {configDotenv} from 'dotenv'
 import {db} from './db'
 import {postsTable} from './db/schema'
+import getAgent from './getAgent'
 import getPinkMonarchyUrl from './getPinkMonarchyUrl'
 import getRandomLine from './getRandomLine'
 import {deepPrint} from './utils'
@@ -24,12 +25,7 @@ getRandomLine(filePath)
     const blob = await response.blob()
     console.timeLog('puzzle', 'Got blob')
 
-    const agent = new AtpAgent({service: 'https://bsky.social'})
-
-    await agent.login({
-      identifier: process.env.BLUESKY_USERNAME!,
-      password: process.env.BLUESKY_PASSWORD!,
-    })
+    const agent = await getAgent()
 
     console.timeLog('puzzle', 'Logged in')
     const {data} = await agent.uploadBlob(blob)
