@@ -1,5 +1,7 @@
 import {AppBskyFeedPost, AtpAgent} from '@atproto/api'
 import {configDotenv} from 'dotenv'
+import {db} from './db'
+import {postsTable} from './db/schema'
 import getPinkMonarchyUrl from './getPinkMonarchyUrl'
 import getRandomLine from './getRandomLine'
 import {deepPrint} from './utils'
@@ -36,7 +38,7 @@ getRandomLine(filePath)
     console.log('blob')
     deepPrint(data.blob)
 
-    const post: Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, 'createdAt'> = {
+    const post: AppBskyFeedPost.Record = {
       text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chess`,
       facets: [
         {
@@ -58,6 +60,16 @@ getRandomLine(filePath)
 
     console.timeLog('puzzle', 'Posted')
     deepPrint(result)
+
+    db.insert(postsTable)
+      .values({
+        username: 'janechess.bsky.social',
+        createdAt: post.createdAt,
+        text: post.text,
+        uri: result.uri,
+        cid: result.cid,
+      })
+      .execute()
   })
   .catch(console.error)
   .finally(() => console.timeEnd('puzzle'))

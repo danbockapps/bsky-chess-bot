@@ -1,10 +1,10 @@
-import {db} from './src/db'
-import {postsTable} from './src/db/schema'
+import {db} from './db'
+import {postsTable} from './db/schema'
 
 db.insert(postsTable)
   .values({
     username: 'boldmovebydan.bsky.social',
-    date: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     text: 'This is not a real post',
     uri: 'abc',
     cid: '123',
