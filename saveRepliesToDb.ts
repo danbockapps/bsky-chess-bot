@@ -1,5 +1,5 @@
 import {isThreadViewPost} from '@atproto/api/dist/client/types/app/bsky/feed/defs'
-import {and, eq, gt, lt, sql} from 'drizzle-orm'
+import {and, eq, lt, sql} from 'drizzle-orm'
 import {db} from './db'
 import {postsTable} from './db/schema'
 import getAgent from './getAgent'
@@ -11,7 +11,7 @@ const saveRepliesToDb = async () => {
     .from(postsTable)
     .where(
       and(
-        lt(postsTable.createdAt, sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-0 hours')`),
+        lt(postsTable.createdAt, sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-12 hours')`),
         eq(postsTable.username, 'janechess.bsky.social'),
         eq(postsTable.processed, 0),
       ),
