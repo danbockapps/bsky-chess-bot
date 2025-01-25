@@ -64,6 +64,7 @@ getRandomLine(filePath)
         text: post.text,
         uri: result.uri,
         cid: result.cid,
+        fen,
       })
       .execute()
   })

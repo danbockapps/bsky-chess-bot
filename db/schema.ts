@@ -12,4 +12,5 @@ export const postsTable = sqliteTable('posts', {
   cid: text().notNull(),
   reply_to_uri: text(),
   reply_to_cid: text(),
+  fen: text(),
 })
