@@ -8,6 +8,7 @@ export const postsTable = sqliteTable('posts', {
   createdAt: text().notNull(),
   text: text().notNull(),
   processed: int().notNull().default(0),
+  correct: int(),
   uri: text().notNull(),
   cid: text().notNull(),
   reply_to_uri: text(),
