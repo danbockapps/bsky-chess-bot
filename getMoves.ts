@@ -12,24 +12,18 @@ const getMoves = (fen: string, response: string) => {
     const word = words.shift()
 
     if (word) {
-      const legalMoves = chess.moves().map(getPlainMove)
-
-      if (legalMoves.includes(getPlainMove(word))) {
+      // Always true
+      try {
+        // If it is a move, make it
         chess.move(word)
         moves.push(word)
+      } catch {
+        // Do nothing
       }
     }
   }
 
   return moves
 }
-
-/**
- * Removes the last character if it is + or #
- * @param str - The input string
- * @returns The modified string
- */
-const getPlainMove = (str: string) =>
-  str.endsWith('+') || str.endsWith('#') ? str.slice(0, -1) : str
 
 export default getMoves
