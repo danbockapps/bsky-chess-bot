@@ -1,5 +1,8 @@
-import {AppBskyFeedPost, AtpAgent} from '@atproto/api'
+import {AppBskyFeedPost} from '@atproto/api'
 import {configDotenv} from 'dotenv'
+import {db} from './db'
+import {postsTable} from './db/schema'
+import getAgent from './getAgent'
 import getPinkMonarchyUrl from './getPinkMonarchyUrl'
 import getRandomLine from './getRandomLine'
 import {deepPrint} from './utils'
@@ -22,12 +25,7 @@ getRandomLine(filePath)
     const blob = await response.blob()
     console.timeLog('puzzle', 'Got blob')
 
-    const agent = new AtpAgent({service: 'https://bsky.social'})
-
-    await agent.login({
-      identifier: process.env.BLUESKY_USERNAME!,
-      password: process.env.BLUESKY_PASSWORD!,
-    })
+    const agent = await getAgent()
 
     console.timeLog('puzzle', 'Logged in')
     const {data} = await agent.uploadBlob(blob)
@@ -36,7 +34,7 @@ getRandomLine(filePath)
     console.log('blob')
     deepPrint(data.blob)
 
-    const post: Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, 'createdAt'> = {
+    const post: AppBskyFeedPost.Record = {
       text: `${color.charAt(0).toUpperCase() + color.slice(1)} to move and mate in 2. #chess`,
       facets: [
         {
@@ -58,6 +56,17 @@ getRandomLine(filePath)
 
     console.timeLog('puzzle', 'Posted')
     deepPrint(result)
+
+    db.insert(postsTable)
+      .values({
+        username: 'janechess.bsky.social',
+        createdAt: post.createdAt,
+        text: post.text,
+        uri: result.uri,
+        cid: result.cid,
+        fen,
+      })
+      .execute()
   })
   .catch(console.error)
   .finally(() => console.timeEnd('puzzle'))
