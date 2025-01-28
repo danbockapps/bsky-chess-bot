@@ -7,6 +7,9 @@ import matesIn2 from './matesIn2'
 import {deepPrint} from './utils'
 
 const saveRepliesToDb = async () => {
+  console.log()
+  console.log('_______________saveRepliesToDb.ts_______________')
+
   const posts = await db
     .select({id: postsTable.id, uri: postsTable.uri, cid: postsTable.cid, fen: postsTable.fen})
     .from(postsTable)
@@ -27,6 +30,7 @@ const saveRepliesToDb = async () => {
     await db.update(postsTable).set({processed: 1}).where(eq(postsTable.id, post.id)).execute()
 
     const response = await agent.getPostThread({uri: post.uri})
+    console.log('Replies:')
     deepPrint(response.data.thread.replies)
 
     const {thread} = response.data
@@ -35,29 +39,26 @@ const saveRepliesToDb = async () => {
     if (isThreadViewPost(thread) && thread.replies && fen) {
       console.log('Inserting replies')
 
-      await db
-        .insert(postsTable)
-        .values(
-          thread.replies.filter(isThreadViewPost).map((r) => {
-            console.log('Inserting reply', r.post.uri)
+      const values = thread.replies.filter(isThreadViewPost).map((r) => {
+        console.log('Inserting reply', r.post.uri)
 
-            // This type has record: {} for some reason
-            // node_modules/@atproto/api/src/client/types/app/bsky/feed/defs.ts
-            const record: {createdAt: string; text: string} = r.post.record as any
+        // This type has record: {} for some reason
+        // node_modules/@atproto/api/src/client/types/app/bsky/feed/defs.ts
+        const record: {createdAt: string; text: string} = r.post.record as any
 
-            return {
-              username: r.post.author.handle,
-              createdAt: record.createdAt,
-              text: record.text,
-              correct: matesIn2(fen, record.text) ? 1 : 0,
-              uri: r.post.uri,
-              cid: r.post.cid,
-              reply_to_uri: post.uri,
-              reply_to_cid: post.cid,
-            }
-          }),
-        )
-        .execute()
+        return {
+          username: r.post.author.handle,
+          createdAt: record.createdAt,
+          text: record.text,
+          correct: matesIn2(fen, record.text) ? 1 : 0,
+          uri: r.post.uri,
+          cid: r.post.cid,
+          reply_to_uri: post.uri,
+          reply_to_cid: post.cid,
+        }
+      })
+
+      if (values.length > 0) await db.insert(postsTable).values(values).execute()
     }
   })
 }
