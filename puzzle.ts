@@ -7,6 +7,9 @@ import getPinkMonarchyUrl from './getPinkMonarchyUrl'
 import getRandomLine from './getRandomLine'
 import {deepPrint} from './utils'
 
+console.log()
+console.log('_______________puzzle.ts_______________')
+console.log(new Date().toISOString())
 console.time('puzzle')
 configDotenv()
 const filePath = process.argv[2]
@@ -69,4 +72,7 @@ getRandomLine(filePath)
       .execute()
   })
   .catch(console.error)
-  .finally(() => console.timeEnd('puzzle'))
+  .finally(() => {
+    console.timeEnd('puzzle')
+    console.log(new Date().toISOString())
+  })
