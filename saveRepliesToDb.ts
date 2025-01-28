@@ -24,6 +24,8 @@ const saveRepliesToDb = async () => {
 
   posts.forEach(async (post) => {
     console.log('Processing post', post.id)
+    await db.update(postsTable).set({processed: 1}).where(eq(postsTable.id, post.id)).execute()
+
     const response = await agent.getPostThread({uri: post.uri})
     deepPrint(response.data.thread.replies)
 
