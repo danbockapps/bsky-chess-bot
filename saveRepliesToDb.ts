@@ -9,6 +9,7 @@ import {deepPrint} from './utils'
 const saveRepliesToDb = async () => {
   console.log()
   console.log('_______________saveRepliesToDb.ts_______________')
+  console.log(new Date().toISOString())
 
   const posts = await db
     .select({id: postsTable.id, uri: postsTable.uri, cid: postsTable.cid, fen: postsTable.fen})
