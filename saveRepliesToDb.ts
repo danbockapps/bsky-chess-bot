@@ -46,11 +46,18 @@ const saveRepliesToDb = async () => {
         // node_modules/@atproto/api/src/client/types/app/bsky/feed/defs.ts
         const record: {createdAt: string; text: string} = r.post.record as any
 
+        const correct = matesIn2(fen, record.text) ? 1 : 0
+
+        console.log('matesIn2')
+        console.log('matesIn2 fen', fen)
+        console.log('matesIn2 text', record.text)
+        console.log('matesIn2 correct', correct)
+
         return {
           username: r.post.author.handle,
           createdAt: record.createdAt,
           text: record.text,
-          correct: matesIn2(fen, record.text) ? 1 : 0,
+          correct,
           uri: r.post.uri,
           cid: r.post.cid,
           reply_to_uri: post.uri,
