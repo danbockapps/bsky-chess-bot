@@ -9,7 +9,7 @@ const getPinkMonarchyUrl = (line: string) => {
   const color = newFen.split(' ')[1] === 'w' ? 'white' : 'black'
 
   return {
-    fen,
+    fen: newFen,
     color,
     url: `https://lichess1.org/export/fen.gif?fen=${encodeURIComponent(
       newFen,
