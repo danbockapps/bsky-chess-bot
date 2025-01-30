@@ -3,8 +3,8 @@ import {Chess} from 'chess.js'
 const getMoves = (fen: string, response: string) => {
   const chess = new Chess(fen)
 
-  // Split on either a space or a number followed by a period
-  const words = response.split(/(?:\s+|\d+\.)/)
+  // Split on commas, periods, and whitespace
+  const words = response.split(/[,\.\s]+/)
 
   const moves = []
 
