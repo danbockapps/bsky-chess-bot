@@ -4,6 +4,7 @@ import {db} from './db'
 import {postsTable} from './db/schema'
 import getAgent from './getAgent'
 import matesIn2 from './matesIn2'
+import reply from './reply'
 import {deepPrint} from './utils'
 
 const saveRepliesToDb = async () => {
@@ -66,7 +67,22 @@ const saveRepliesToDb = async () => {
         }
       })
 
-      if (values.length > 0) await db.insert(postsTable).values(values).execute()
+      if (values.length > 0) {
+        await db.insert(postsTable).values(values).execute()
+
+        await Promise.all(
+          values.map(async (value) => {
+            if (value.correct)
+              await reply(
+                {
+                  root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
+                  parent: {uri: value.uri, cid: value.cid},
+                },
+                'Correct! 🎉',
+              )
+          }),
+        )
+      }
     }
   })
 }
