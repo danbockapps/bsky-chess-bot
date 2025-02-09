@@ -17,7 +17,7 @@ const saveRepliesToDb = async () => {
     .from(postsTable)
     .where(
       and(
-        lt(postsTable.createdAt, sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-11 hours')`),
+        lt(postsTable.createdAt, sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-23 hours')`),
         eq(postsTable.username, 'janechess.bsky.social'),
         eq(postsTable.processed, 0),
       ),
