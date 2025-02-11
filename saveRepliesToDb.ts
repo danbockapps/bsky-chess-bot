@@ -1,7 +1,7 @@
 import {isThreadViewPost} from '@atproto/api/dist/client/types/app/bsky/feed/defs'
 import {and, eq, lt, sql} from 'drizzle-orm'
 import {db} from './db'
-import {postsTable} from './db/schema'
+import {correctAnswersTable, postsTable} from './db/schema'
 import getAgent from './getAgent'
 import matesIn2 from './matesIn2'
 import reply from './reply'
@@ -69,6 +69,13 @@ const saveRepliesToDb = async () => {
 
       if (values.length > 0) {
         await db.insert(postsTable).values(values).execute()
+
+        for (const value of values) {
+          await db
+            .insert(correctAnswersTable)
+            .values({post_id: post.id, username: value.username})
+            .execute()
+        }
 
         await Promise.all(
           values.map(async (value) => {
