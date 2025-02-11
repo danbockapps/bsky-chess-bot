@@ -3,8 +3,11 @@ import {Chess} from 'chess.js'
 const getMoves = (fen: string, response: string) => {
   const chess = new Chess(fen)
 
+  // Remove text within parentheses, including the parentheses themselves
+  const cleanedResponse = response.replace(/\(.*?\)/g, '')
+
   // Split on commas, periods, and whitespace
-  const words = response.split(/[,\.\s]+/)
+  const words = cleanedResponse.split(/[,\.\s]+/)
 
   const moves = []
 

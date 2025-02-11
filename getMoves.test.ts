@@ -35,4 +35,11 @@ describe('getMoves', () => {
     const result = getMoves(fen, response)
     expect(result).toEqual(['e4', 'e5', 'Nf3'])
   })
+
+  it('should ignore move in parentheses', () => {
+    const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    const response = '1. e4 (1. d4 d5) e5 2. Nf3'
+    const result = getMoves(fen, response)
+    expect(result).toEqual(['e4', 'e5', 'Nf3'])
+  })
 })
