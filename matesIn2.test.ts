@@ -54,4 +54,9 @@ describe('matesIn2', () => {
     const result = matesIn2(fen, '1...Bh3+ 2.Kg1 Qg2#')
     expect(result).toEqual(true)
   })
+
+  it('should handle ++', () => {
+    const result = matesIn2(fen, 'Bh3+ Kg1 Qg2++')
+    expect(result).toEqual(true)
+  })
 })

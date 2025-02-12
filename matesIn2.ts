@@ -2,7 +2,7 @@ import {Chess} from 'chess.js'
 import getMoves from './getMoves'
 
 const matesIn2 = (fen: string, response: string) => {
-  const moves = getMoves(fen, response)
+  const moves = getMoves(fen, response.replaceAll('++', ''))
 
   if (moves.length !== 3) return false
 
