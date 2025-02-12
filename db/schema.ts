@@ -1,4 +1,4 @@
-import {int, sqliteTable, text, uniqueIndex} from 'drizzle-orm/sqlite-core'
+import {int, sqliteTable, text} from 'drizzle-orm/sqlite-core'
 
 // Apply changes to the database: npx drizzle-kit push
 
@@ -15,14 +15,3 @@ export const postsTable = sqliteTable('posts', {
   reply_to_cid: text(),
   fen: text(),
 })
-
-export const correctAnswersTable = sqliteTable(
-  'correct_answers',
-  {
-    post_id: int()
-      .notNull()
-      .references(() => postsTable.id), // sqlite doesn't actually enforce this
-    username: text().notNull(),
-  },
-  (table) => [uniqueIndex('unique_post_id_username').on(table.post_id, table.username)],
-)
