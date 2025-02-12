@@ -11,6 +11,7 @@ const saveRepliesToDb = async () => {
   console.log()
   console.log('_______________saveRepliesToDb.ts_______________')
   console.log(new Date().toISOString())
+  console.time('saveRepliesToDb')
 
   const posts = await db
     .select({id: postsTable.id, uri: postsTable.uri, cid: postsTable.cid, fen: postsTable.fen})
@@ -23,11 +24,13 @@ const saveRepliesToDb = async () => {
       ),
     )
 
+  console.timeLog('saveRepliesToDb', 'Got posts from the database')
+
   console.log({posts})
 
   const agent = await getAgent()
 
-  posts.forEach(async (post) => {
+  for (const post of posts) {
     console.log('Processing post', post.id)
     await db.update(postsTable).set({processed: 1}).where(eq(postsTable.id, post.id)).execute()
 
@@ -70,21 +73,25 @@ const saveRepliesToDb = async () => {
       if (values.length > 0) {
         await db.insert(postsTable).values(values).execute()
 
-        await Promise.all(
-          values.map(async (value) => {
-            if (value.correct)
-              await reply(
-                {
-                  root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
-                  parent: {uri: value.uri, cid: value.cid},
-                },
-                'Correct! 🎉',
-              )
-          }),
-        )
+        for (const value of values) {
+          if (value.correct) {
+            console.timeLog('saveRepliesToDb', 'Replying to', value.username)
+            await reply(
+              {
+                root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
+                parent: {uri: value.uri, cid: value.cid},
+              },
+              'Correct! 🎉',
+            )
+            await delay(5000) // Wait for 5 seconds before processing the next value
+          }
+        }
       }
     }
-  })
+  }
+  console.timeEnd('saveRepliesToDb')
 }
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 saveRepliesToDb()
