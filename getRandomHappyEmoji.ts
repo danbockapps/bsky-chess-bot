@@ -41,3 +41,5 @@ const happyEmojis = [
   '💯',
   '🆒',
 ]
+
+export default getRandomHappyEmoji
