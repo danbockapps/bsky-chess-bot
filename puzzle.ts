@@ -62,7 +62,7 @@ getRandomLine(filePath)
 
     db.insert(postsTable)
       .values({
-        username: 'janechess.bsky.social',
+        username: process.env.BLUESKY_USERNAME!,
         createdAt: post.createdAt,
         text: post.text,
         uri: result.uri,
