@@ -81,7 +81,7 @@ const saveRepliesToDb = async () => {
                 root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
                 parent: {uri: value.uri, cid: value.cid},
               },
-              'Correct! 🎉',
+              `Correct! ${getRandomHappyEmoji()}`,
             )
             await delay(5000) // Wait for 5 seconds before processing the next value
           }
