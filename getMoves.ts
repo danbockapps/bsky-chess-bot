@@ -6,8 +6,8 @@ const getMoves = (fen: string, response: string) => {
   // Remove text within parentheses, including the parentheses themselves
   const cleanedResponse = response.replace(/\(.*?\)/g, '')
 
-  // Split on commas, periods, and whitespace
-  const words = cleanedResponse.split(/[,\.\s]+/)
+  // Split on commas, periods, whitespace, and the … character
+  const words = cleanedResponse.split(/[,\.\s…]+/)
 
   const moves = []
 
