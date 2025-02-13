@@ -4,3 +4,4 @@ node_modules
 primary_dids.txt*
 handles.txt
 *.db
+downloadProdDb.sh
