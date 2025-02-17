@@ -1,4 +1,4 @@
-import {aliasedTable, eq, max} from 'drizzle-orm'
+import {aliasedTable, desc, eq, max, sql, sum} from 'drizzle-orm'
 import {int, sqliteTable, sqliteView, text} from 'drizzle-orm/sqlite-core'
 
 // Apply changes to the database: npx drizzle-kit push
@@ -30,4 +30,24 @@ export const marksView = sqliteView('marks').as((qb) =>
     .from(replies)
     .innerJoin(postsTable, eq(replies.reply_to_uri, postsTable.uri))
     .groupBy(replies.reply_to_uri, replies.username),
+)
+
+/**
+ * All should be marked properly starting with OP on 2/11/2025 12:00 UTC
+ */
+
+export const standingsView = sqliteView('standings').as((qb) =>
+  qb
+    .select({
+      username: marksView.username,
+      points: sum(marksView.mark).as('points'),
+    })
+    .from(marksView)
+    .where(
+      sql`${marksView.opDate} >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-8 days') AND
+          ${marksView.opDate} <= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-1 day') AND
+          ${marksView.opDate} > '2025-02-11T11:00:00Z'`,
+    )
+    .groupBy(marksView.username)
+    .orderBy(desc(sum(marksView.mark))),
 )
