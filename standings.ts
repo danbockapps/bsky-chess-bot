@@ -2,6 +2,9 @@ import {configDotenv} from 'dotenv'
 import {db} from './db'
 import {standingsView} from './db/schema'
 
+const WEEK_ONE_START = new Date('2025-02-18')
+const CHAR_LIMIT = 300
+
 console.log()
 console.log('_______________standings.ts_______________')
 console.log(new Date().toISOString())
@@ -21,7 +24,7 @@ const postStandings = async () => {
   )
 
   const lines = [
-    `🚨 Standings for week ${getWeekNumberFromStart(new Date(), new Date('2025-02-18'))}!`,
+    `🚨 Standings for week ${getWeekNumberFromStart(new Date(), WEEK_ONE_START)}!`,
     '',
     ...rankings.map((r) => `${r.rank}. @${r.username} (${r.points})`),
   ]
@@ -37,7 +40,7 @@ postStandings().finally(() => {
 const getPosts = (posts: string[], currentPost: string, lines: string[]): string[] => {
   if (lines.length === 0) return posts
   const candidatePost = currentPost + (currentPost.length === 0 ? '' : '\n') + lines[0]
-  if (candidatePost.length > 300) return getPosts([...posts, currentPost], '', lines)
+  if (candidatePost.length > CHAR_LIMIT) return getPosts([...posts, currentPost], '', lines)
   else return getPosts(posts, candidatePost, lines.slice(1))
 }
 
