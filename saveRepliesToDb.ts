@@ -3,6 +3,7 @@ import {and, eq, lt, sql} from 'drizzle-orm'
 import {db} from './db'
 import {postsTable} from './db/schema'
 import getAgent from './getAgent'
+import getMoves from './getMoves'
 import getRandomHappyEmoji from './getRandomHappyEmoji'
 import matesIn2 from './matesIn2'
 import reply from './reply'
@@ -75,17 +76,19 @@ const saveRepliesToDb = async () => {
         await db.insert(postsTable).values(values).execute()
 
         for (const value of values) {
+          const replyRef = {
+            root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
+            parent: {uri: value.uri, cid: value.cid},
+          }
+
           if (value.correct) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
-            await reply(
-              {
-                root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
-                parent: {uri: value.uri, cid: value.cid},
-              },
-              `Correct! ${getRandomHappyEmoji()}`,
-            )
-            await delay(5000) // Wait for 5 seconds before processing the next value
+            await reply(replyRef, `Correct! ${getRandomHappyEmoji()}`)
+          } else if (getMoves(fen, value.text).length > 0) {
+            console.timeLog('saveRepliesToDb', 'Replying to', value.username)
+            await reply(replyRef, 'To earn a point, provide a full line (3 ply) ending with mate.')
           }
+          await delay(5000) // Wait for 5 seconds before processing the next value
         }
 
         // If utc time is a monday between 18:00 and 23:59, post standings
