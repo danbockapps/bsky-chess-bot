@@ -1,6 +1,7 @@
 import {configDotenv} from 'dotenv'
 import {db} from './db'
 import {standingsView} from './db/schema'
+import {deluxePost} from './deluxePost'
 
 const WEEK_ONE_START = new Date('2025-02-18')
 const CHAR_LIMIT = 300
@@ -29,12 +30,13 @@ const postStandings = async () => {
     ...rankings.map((r) => `${r.rank}. @${r.username} (${r.points})`),
   ]
 
-  console.log(getPosts([], '', lines))
+  const posts = getPosts([], '', lines)
+  console.log(posts)
+  await deluxePost(posts)
 }
 
 postStandings().finally(() => {
   console.timeEnd('standings')
-  console.log('_______________standings.ts_______________')
 })
 
 const getPosts = (posts: string[], currentPost: string, lines: string[]): string[] => {

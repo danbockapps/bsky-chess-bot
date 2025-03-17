@@ -87,6 +87,17 @@ const saveRepliesToDb = async () => {
             await delay(5000) // Wait for 5 seconds before processing the next value
           }
         }
+
+        // If utc time is a monday between 18:00 and 23:59, post standings
+        const utc = new Date().toUTCString()
+        const day = utc.slice(0, 3)
+        const hour = Number(utc.slice(17, 19))
+        if (day === 'Mon' && hour >= 18 && hour < 24) {
+          console.timeLog('saveRepliesToDb', 'Posting standings')
+          // await postStandings()
+        } else {
+          console.timeLog('saveRepliesToDb', 'Not posting standings')
+        }
       }
     }
   }
