@@ -7,6 +7,7 @@ import getMoves from './getMoves'
 import getRandomHappyEmoji from './getRandomHappyEmoji'
 import matesIn2 from './matesIn2'
 import reply from './reply'
+import {postStandings} from './standings'
 import {deepPrint} from './utils'
 
 const saveRepliesToDb = async () => {
@@ -97,7 +98,9 @@ const saveRepliesToDb = async () => {
         const hour = Number(utc.slice(17, 19))
         if (day === 'Mon' && hour >= 18 && hour < 24) {
           console.timeLog('saveRepliesToDb', 'Posting standings')
-          // await postStandings()
+          await postStandings().finally(() => {
+            console.timeEnd('standings')
+          })
         } else {
           console.timeLog('saveRepliesToDb', 'Not posting standings')
         }

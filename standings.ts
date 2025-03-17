@@ -12,7 +12,7 @@ console.log(new Date().toISOString())
 console.time('standings')
 configDotenv()
 
-const postStandings = async () => {
+export const postStandings = async () => {
   const qr = await db.select().from(standingsView)
   const processedQr = qr.map((r) => ({...r, points: Number(r.points)}))
 
@@ -34,10 +34,6 @@ const postStandings = async () => {
   console.log(posts)
   await deluxePost(posts)
 }
-
-postStandings().finally(() => {
-  console.timeEnd('standings')
-})
 
 const getPosts = (posts: string[], currentPost: string, lines: string[]): string[] => {
   if (lines.length === 0) return posts
