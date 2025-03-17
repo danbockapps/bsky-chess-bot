@@ -37,7 +37,7 @@ const postWithAutotag = async (text: string, reply?: ReplyRef) => {
 
 const getFacets = async (text: string): Promise<AppBskyRichtextFacet.Main[]> => {
   console.time('getFacets')
-  const tags = text.match(/@[A-Za-z.]+/g)?.map((m) => m.replace(/\.$/, ''))
+  const tags = text.match(/@[A-Za-z0-9.]+/g)?.map((m) => m.replace(/\.$/, ''))
   if (!tags) return []
   const agent = new AtpAgent({service: 'https://bsky.social'})
   const results: {handle: string; did: string}[] = []
