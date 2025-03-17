@@ -60,12 +60,3 @@ const getFacets = async (text: string): Promise<AppBskyRichtextFacet.Main[]> => 
     features: [{$type: 'app.bsky.richtext.facet#mention', did: result.did}],
   }))
 }
-
-const test = async () => {
-  await deluxePost([
-    'Test post mentioning @boldmovebydan.bsky.social. and @chesspuzzlebot.bsky.social',
-    'Second post, also mentioning @boldmovebydan.bsky.social.',
-  ])
-}
-
-test()
