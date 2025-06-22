@@ -52,10 +52,12 @@ const getFacets = async (text: string): Promise<AppBskyRichtextFacet.Main[]> => 
     if (data) results.push({handle, did: data.did})
   }
 
+  console.timeEnd('getFacets')
+
   return results.map((result) => ({
     index: {
-      byteStart: text.indexOf(result.handle) - 1,
-      byteEnd: text.indexOf(result.handle) + result.handle.length,
+      byteStart: Buffer.from(text).indexOf(result.handle) - 1,
+      byteEnd: Buffer.from(text).indexOf(result.handle) + result.handle.length,
     },
     features: [{$type: 'app.bsky.richtext.facet#mention', did: result.did}],
   }))

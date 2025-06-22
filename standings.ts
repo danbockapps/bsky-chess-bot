@@ -6,12 +6,6 @@ import {deluxePost} from './deluxePost'
 const WEEK_ONE_START = new Date('2025-02-18')
 const CHAR_LIMIT = 300
 
-console.log()
-console.log('_______________standings.ts_______________')
-console.log(new Date().toISOString())
-console.time('standings')
-configDotenv()
-
 export const postStandings = async () => {
   const qr = await db.select().from(standingsView)
   const processedQr = qr.map((r) => ({...r, points: Number(r.points)}))
@@ -29,6 +23,10 @@ export const postStandings = async () => {
     '',
     ...rankings.map((r) => `${r.rank}. @${r.username} (${r.points})`),
   ]
+
+  console.log('Lines:')
+  console.log(lines)
+  console.log()
 
   const posts = getPosts([], '', lines)
   console.log(posts)
