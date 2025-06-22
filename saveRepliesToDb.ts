@@ -84,7 +84,10 @@ const saveRepliesToDb = async () => {
 
           if (value.correct) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
-            await reply(replyRef, `Correct! ${getRandomHappyEmoji()}`)
+            await reply(
+              replyRef,
+              `Correct! ${getRandomHappyEmoji()}\nAnd I just posted a new puzzle. Check it out!`,
+            )
           } else if (getMoves(fen, value.text).length > 0) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
             await reply(replyRef, 'To earn a point, provide a full line (3 ply) ending with mate.')
