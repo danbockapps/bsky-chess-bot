@@ -4,7 +4,9 @@ import {db} from './db'
 import {postsTable} from './db/schema'
 import getAgent from './getAgent'
 import getMoves from './getMoves'
+import getRandomCorrect from './getRandomCorrect'
 import getRandomHappyEmoji from './getRandomHappyEmoji'
+import getRandomNewPuzzleMessage from './getRandomNewPuzzleMessage'
 import matesIn2 from './matesIn2'
 import reply from './reply'
 import {postStandings} from './standings'
@@ -86,7 +88,7 @@ const saveRepliesToDb = async () => {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
             await reply(
               replyRef,
-              `Correct! ${getRandomHappyEmoji()}\nAnd I just posted a new puzzle. Check it out!`,
+              `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${getRandomNewPuzzleMessage()}`,
             )
           } else if (getMoves(fen, value.text).length > 0) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
