@@ -3,6 +3,8 @@ import {db} from './db'
 import {standingsView} from './db/schema'
 import {deluxePost} from './deluxePost'
 
+configDotenv()
+
 const WEEK_ONE_START = new Date('2025-02-18')
 const CHAR_LIMIT = 300
 
