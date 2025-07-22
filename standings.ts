@@ -35,8 +35,8 @@ export const postStandings = async () => {
   await deluxePost(posts)
 }
 
-const getPosts = (posts: string[], currentPost: string, lines: string[]): string[] => {
-  if (lines.length === 0) return posts
+export const getPosts = (posts: string[], currentPost: string, lines: string[]): string[] => {
+  if (lines.length === 0) return [...posts, currentPost]
   const candidatePost = currentPost + (currentPost.length === 0 ? '' : '\n') + lines[0]
   if (candidatePost.length > CHAR_LIMIT) return getPosts([...posts, currentPost], '', lines)
   else return getPosts(posts, candidatePost, lines.slice(1))
