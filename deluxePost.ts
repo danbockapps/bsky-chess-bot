@@ -47,9 +47,15 @@ const getFacets = async (text: string): Promise<AppBskyRichtextFacet.Main[]> => 
   for (const tag of tags) {
     console.log('tag', tag)
     const handle = tag.slice(1)
-    const {data} = await agent.resolveHandle({handle})
-    console.timeLog('getFacets', 'Resolved handle', handle)
-    if (data) results.push({handle, did: data.did})
+    try {
+      const {data} = await agent.resolveHandle({handle})
+      console.timeLog('getFacets', 'Resolved handle', handle)
+      if (data) results.push({handle, did: data.did})
+    } catch (err) {
+      // Not every @mention is a real Bluesky handle (e.g. chess usernames in
+      // the standings). Skip anything that doesn't resolve instead of crashing.
+      console.timeLog('getFacets', 'Skipping unresolvable handle', handle)
+    }
   }
 
   console.timeEnd('getFacets')

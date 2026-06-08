@@ -103,6 +103,7 @@ const saveRepliesToDb = async () => {
         const hour = Number(utc.slice(17, 19))
         if (day === 'Mon' && hour >= 18 && hour < 24) {
           console.timeLog('saveRepliesToDb', 'Posting standings')
+          console.time('standings')
           await postStandings().finally(() => {
             console.timeEnd('standings')
           })
