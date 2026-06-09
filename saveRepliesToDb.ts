@@ -3,6 +3,7 @@ import {and, eq, lt, sql} from 'drizzle-orm'
 import {db} from './db'
 import {postsTable} from './db/schema'
 import getAgent from './getAgent'
+import {getGameInfoMessage} from './getGameDetails'
 import getMoves from './getMoves'
 import getRandomCorrect from './getRandomCorrect'
 import getRandomHappyEmoji from './getRandomHappyEmoji'
@@ -19,7 +20,13 @@ const saveRepliesToDb = async () => {
   console.time('saveRepliesToDb')
 
   const posts = await db
-    .select({id: postsTable.id, uri: postsTable.uri, cid: postsTable.cid, fen: postsTable.fen})
+    .select({
+      id: postsTable.id,
+      uri: postsTable.uri,
+      cid: postsTable.cid,
+      fen: postsTable.fen,
+      gameId: postsTable.gameId,
+    })
     .from(postsTable)
     .where(
       and(
@@ -78,6 +85,10 @@ const saveRepliesToDb = async () => {
       if (values.length > 0) {
         await db.insert(postsTable).values(values).execute()
 
+        // Fetch the game's details once per position (one Lichess API call),
+        // then reuse the message for every correct reply in this thread.
+        const gameInfo = post.gameId ? await getGameInfoMessage(post.gameId) : null
+
         for (const value of values) {
           const replyRef = {
             root: {uri: value.reply_to_uri, cid: value.reply_to_cid},
@@ -86,9 +97,10 @@ const saveRepliesToDb = async () => {
 
           if (value.correct) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
+            const gameInfoLine = gameInfo ? `${gameInfo}\n\n` : ''
             await reply(
               replyRef,
-              `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${getRandomNewPuzzleMessage()}`,
+              `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${gameInfoLine}${getRandomNewPuzzleMessage()}`,
             )
           } else if (getMoves(fen, value.text).length > 0) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)

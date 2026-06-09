@@ -15,6 +15,7 @@ export const postsTable = sqliteTable('posts', {
   reply_to_uri: text(),
   reply_to_cid: text(),
   fen: text(),
+  gameId: text(),
 })
 
 const replies = aliasedTable(postsTable, 'replies')

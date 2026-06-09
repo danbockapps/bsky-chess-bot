@@ -22,7 +22,7 @@ if (!filePath) {
 getRandomLine(filePath)
   .then(async (line) => {
     console.timeLog('puzzle', 'Got random line')
-    const {fen, color, url} = getPinkMonarchyUrl(line)
+    const {fen, color, url, gameId} = getPinkMonarchyUrl(line)
     const response = await fetch(url)
     console.timeLog('puzzle', 'Got image')
     const blob = await response.blob()
@@ -68,6 +68,7 @@ getRandomLine(filePath)
         uri: result.uri,
         cid: result.cid,
         fen,
+        gameId,
       })
       .execute()
   })
