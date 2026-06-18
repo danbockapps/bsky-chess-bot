@@ -11,7 +11,7 @@ import getRandomNewPuzzleMessage from './getRandomNewPuzzleMessage'
 import matesIn2 from './matesIn2'
 import reply from './reply'
 import {postStandings} from './standings'
-import {deepPrint} from './utils'
+import {deepPrint, linkFacet} from './utils'
 
 const saveRepliesToDb = async () => {
   console.log()
@@ -98,10 +98,15 @@ const saveRepliesToDb = async () => {
           if (value.correct) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
             const gameInfoLine = gameInfo ? `${gameInfo}\n\n` : ''
-            await reply(
-              replyRef,
-              `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${gameInfoLine}${getRandomNewPuzzleMessage()}`,
-            )
+            const text = `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${gameInfoLine}${getRandomNewPuzzleMessage()}`
+
+            // Turn the game-info sentence into a link to the Lichess game.
+            const facet =
+              gameInfo && post.gameId
+                ? linkFacet(text, gameInfo, `https://lichess.org/${post.gameId}`)
+                : null
+
+            await reply(replyRef, text, facet ? [facet] : undefined)
           } else if (getMoves(fen, value.text).length > 0) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
             await reply(replyRef, 'To earn a point, provide a full line (3 ply) ending with mate.')
