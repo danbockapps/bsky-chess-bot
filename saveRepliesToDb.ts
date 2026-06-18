@@ -97,13 +97,13 @@ const saveRepliesToDb = async () => {
 
           if (value.correct) {
             console.timeLog('saveRepliesToDb', 'Replying to', value.username)
-            const gameInfoLine = gameInfo ? `${gameInfo}\n\n` : ''
+            const gameInfoLine = gameInfo ? `${gameInfo.message}\n\n` : ''
             const text = `${getRandomCorrect()} ${getRandomHappyEmoji()}\n\n${gameInfoLine}${getRandomNewPuzzleMessage()}`
 
-            // Turn the game-info sentence into a link to the Lichess game.
+            // Turn "name vs name on Lichess" into a link to the source game.
             const facet =
               gameInfo && post.gameId
-                ? linkFacet(text, gameInfo, `https://lichess.org/${post.gameId}`)
+                ? linkFacet(text, gameInfo.linkText, `https://lichess.org/${post.gameId}`)
                 : null
 
             await reply(replyRef, text, facet ? [facet] : undefined)

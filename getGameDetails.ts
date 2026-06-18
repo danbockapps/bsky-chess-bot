@@ -29,8 +29,13 @@ export const getGameDetails = async (gameId: string) => {
  * Builds a sentence describing where a puzzle position came from, e.g.
  * "This position arose in abc vs def on Lichess on September 23, 2023."
  * Returns null if the game can't be fetched, so callers can skip it silently.
+ *
+ * `linkText` is the portion of the message ("abc vs def on Lichess") that
+ * callers can turn into a link to the source game.
  */
-export const getGameInfoMessage = async (gameId: string): Promise<string | null> => {
+export const getGameInfoMessage = async (
+  gameId: string,
+): Promise<{message: string; linkText: string} | null> => {
   try {
     const {createdAt, white, black} = await getGameDetails(gameId)
     const date = new Date(createdAt).toLocaleDateString('en-US', {
@@ -39,7 +44,8 @@ export const getGameInfoMessage = async (gameId: string): Promise<string | null>
       day: 'numeric',
       timeZone: 'UTC',
     })
-    return `This position arose in ${white} vs ${black} on Lichess on ${date}.`
+    const linkText = `${white} vs ${black} on Lichess`
+    return {message: `This position arose in ${linkText} on ${date}.`, linkText}
   } catch (error) {
     console.error('Error fetching game details:', error)
     return null
